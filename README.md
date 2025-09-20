@@ -40,7 +40,3 @@ This repository contains the Infrastructure as Code (IaC) for deploying an Amazo
 2. Apply Configuration: `terraform apply` (confirm with `yes`) to provision the cluster.
 3. Verify Cluster: Follow kubeconfig steps above and run `kubectl get nodes`.
 4. Deploy App: The `deploy.yml` workflow triggers on push to `master`, deploying from the `retail-app` submodule.
-
-## Submission Note
-
-This setup represents the completed infrastructure and automation groundwork using a submodule for app deployment. The repository includes `eks.tf`, `retail-app` (submodule), and `deploy.yml`. Please review the code and test with a provisioned cluster.
