@@ -2,7 +2,7 @@ name: Deploy to EKS
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -11,12 +11,12 @@ jobs:
       - name: Checkout infrastructure code
         uses: actions/checkout@v4
         with:
-          submodules: recursive # This fetches submodules
+          submodules: recursive
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.13.3
+          terraform_version: 1.3.0
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
