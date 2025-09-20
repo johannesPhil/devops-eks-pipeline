@@ -44,7 +44,3 @@ This repository contains the Infrastructure as Code (IaC) for deploying an Amazo
 ## Submission Note
 
 This setup represents the completed infrastructure and automation groundwork using a submodule for app deployment. The repository includes `eks.tf`, `retail-app` (submodule), and `deploy.yml`. Please review the code and test with a provisioned cluster.
-
-## Contact
-
-- [Your Name/Email] for questions or extension requests.
