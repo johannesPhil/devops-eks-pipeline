@@ -49,22 +49,6 @@ module "eks" {
   }
 }
 
-# Node group IAM policies are handled automatically by the eks module.
-# The following resources should be removed to avoid conflicts and follow best practices.
-/*
-resource "aws_iam_role_policy_attachment" "node_group_worker" {
-  role = module.eks.eks_managed_node_groups["default"].iam_role_name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-}
-resource "aws_iam_role_policy_attachment" "node_group_cni" {
-  role = module.eks.eks_managed_node_groups["default"].iam_role_name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-}
-resource "aws_iam_role_policy_attachment" "node_group_ecr" {
-  role = module.eks.eks_managed_node_groups["default"].iam_role_name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-*/
 
 # Cluster Access for IAM User
 resource "aws_eks_access_entry" "admin" {
