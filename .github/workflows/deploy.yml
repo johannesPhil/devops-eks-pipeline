@@ -1,0 +1,60 @@
+name: Deploy to EKS
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout infrastructure code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # This fetches submodules
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Initialize Terraform
+        run: cd terraform && terraform init
+
+      - name: Apply Terraform
+        run: cd terraform && terraform apply -auto-approve
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Install Helmfile
+        run: |
+          wget https://github.com/helmfile/helmfile/releases/latest/download/helmfile_linux_amd64.tar.gz
+          tar -xzf helmfile_linux_amd64.tar.gz
+          sudo mv helmfile /usr/local/bin/
+          helmfile version
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name innovatemart-cluster --region us-east-1 --role-arn arn:aws:iam::491085392395:user/innovatemart-dev-readonly
+
+      - name: Deploy retail store app
+        run: |
+          cd retail-app
+          export IMAGE_TAG=1.0.0
+          chmod +x scripts/kubernetes-dist.sh
+          ./scripts/kubernetes-dist.sh
+          kubectl apply -f dist/kubernetes/kubernetes.yaml
+          kubectl wait --for=condition=available deployments --all --timeout=300s
+
+      - name: Get application URL
+        run: |
+          echo "Waiting for LoadBalancer..."
+          kubectl get svc ui
